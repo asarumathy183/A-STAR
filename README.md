@@ -1,12 +1,10 @@
 <h1>ExpNo 4 : Implement A* search algorithm for a Graph</h1> 
-<h3>Name:       </h3>
-<h3>Register Number:           </h3>
+<h3>Name: SARUMATHY A    </h3>
+<h3>Register Number: 212224060240          </h3>
 <H3>Aim:</H3>
 <p>To ImplementA * Search algorithm for a Graph using Python 3.</p>
 <H3>Algorithm:</H3>
 
-``````
-// A* Search Algorithm
 1.  Initialize the open list
 2.  Initialize the closed list
     put the starting node on the open 
@@ -22,9 +20,9 @@
        parents to q
    
     d) for each successor
-        i) if successor is the goal, stop search
+    i) if successor is the goal, stop search
         
-        ii) else, compute both g and h for successor
+    ii) else, compute both g and h for successor
           successor.g = q.g + distance between 
                               successor and q
           successor.h = distance from goal to 
@@ -33,22 +31,127 @@
           Manhattan, Diagonal and Euclidean 
           Heuristics)
           
-          successor.f = successor.g + successor.h
 
-        iii) if a node with the same position as 
+   successor.f = successor.g + successor.h
+
+   
+iii) if a node with the same position as 
             successor is in the OPEN list which has a 
            lower f than successor, skip this successor
 
-        iV) if a node with the same position as 
+ iV) if a node with the same position as 
             successor  is in the CLOSED list which has
             a lower f than successor, skip this successor
             otherwise, add  the node to the open list
      end (for loop)
   
-    e) push q on the closed list
+e) push q on the closed list
     end (while loop)
 
-``````
+
+<hr>
+
+<h3>Program:</h3>
+
+```
+import heapq
+
+# -------------------------
+# A* Search Function
+# -------------------------
+def a_star(graph, heuristics, start, goal):
+    open_list = []
+    heapq.heappush(open_list, (0, start))  # (f, node)
+
+    parent = {start: None}
+    g_cost = {start: 0}
+    closed_list = set()
+
+    while open_list:
+        f, current = heapq.heappop(open_list)
+
+        if current == goal:
+            # Build final path
+            path = []
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+            return path[::-1]
+
+        closed_list.add(current)
+
+        for neighbor, cost in graph[current]:
+            temp_g = g_cost[current] + cost
+            temp_f = temp_g + heuristics[neighbor]
+
+            # If neighbor already in closed with better f -> skip
+            if neighbor in closed_list and temp_f >= g_cost.get(neighbor, float('inf')):
+                continue
+
+            # If better path found -> update
+            if temp_f < g_cost.get(neighbor, float('inf')):
+                parent[neighbor] = current
+                g_cost[neighbor] = temp_g
+                heapq.heappush(open_list, (temp_f, neighbor))
+
+    return None
+
+
+
+# -------------------------
+# MAIN PROGRAM
+# -------------------------
+
+# Read number of nodes and edges
+n, e = map(int, input().split())
+
+graph = {}
+
+# Read edges
+for _ in range(e):
+    line = input().strip()
+    while line == "":      # Skip empty lines
+        line = input().strip()
+
+    u, v, w = line.split()
+    w = int(w)
+
+    if u not in graph:
+        graph[u] = []
+    if v not in graph:
+        graph[v] = []
+
+    # Undirected graph
+    graph[u].append((v, w))
+    graph[v].append((u, w))
+
+# Read heuristics
+heuristics = {}
+start_node = None
+goal_node = None
+
+for idx in range(n):
+    line = input().strip()
+    while line == "":      # Skip empty lines
+        line = input().strip()
+
+    node, h = line.split()
+    h = int(h)
+
+    heuristics[node] = h
+
+    if idx == 0:
+        start_node = node  # First node is start
+
+    if h == 0:
+        goal_node = node   # Node with heuristic 0 is goal
+
+
+# Run A* Search
+path = a_star(graph, heuristics, start_node, goal_node)
+
+print("Path found:", path)
+```
 
 <hr>
 <h2>Sample Graph I</h2>
@@ -90,6 +193,11 @@ J 0 <br>
 Path found: ['A', 'F', 'G', 'I', 'J']
 
 
+
+<h3>Output:</h3>
+
+<img width="469" height="658" alt="image" src="https://github.com/user-attachments/assets/6f153a40-3326-49ab-b143-a2751aa0f46a" />
+
 <hr>
 <h2>Sample Graph II</h2>
 <hr>
@@ -117,3 +225,13 @@ G 0 <br>
 <h2>Sample Output</h2>
 <hr>
 Path found: ['A', 'E', 'D', 'G']
+
+
+
+<h3>Output:</h3>
+
+<img width="488" height="588" alt="image" src="https://github.com/user-attachments/assets/cf789456-a85c-44c6-97a2-d3206b61e14f" />
+
+<h3>Result:</h3>
+
+A* Search algorithm for a Graph using Python 3 is implemented.
