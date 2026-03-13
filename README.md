@@ -13,7 +13,6 @@
 3.  while the open list is not empty
     a) find the node with the least f on 
        the open list, call it "q"
-
     b) pop q off the open list
   
     c) generate q's 8 successors and set their 
